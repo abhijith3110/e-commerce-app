@@ -39,7 +39,7 @@ export const listProducts = async (req, res, next) => {
 
     try {
         
-        const products = await Product.find()
+        const products = await Product.find().sort({_id: -1})
         res.status(200).json({ message:"", data: products })
 
     } catch (error) {
@@ -124,6 +124,38 @@ export const deleteProduct = async (req, res, next) => {
     } catch (error) {
 
         return next(new httpError("Failed to Delete Product. Please try Again", 500))
+    }
+
+}
+
+
+//get one Product
+
+export const getOneProduct = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params
+
+        
+        if (! id) {
+
+            return next(new httpError("Product ID Required", 404))
+        }
+
+        const product = await Product.findOne({_id: id})
+
+        if (! product) {
+
+            return next(new httpError("Product not Found", 404))
+        }
+
+        res.status(200).json({message:"", data: product})
+
+        
+    } catch (error) {
+
+        return next(new httpError("Failed to get Product. Please try Again", 500))
     }
 
 }
